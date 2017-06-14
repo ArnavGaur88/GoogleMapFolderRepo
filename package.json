@@ -1,0 +1,21 @@
+{
+  "name": "googlemapspackage",
+  "version": "1.0.0",
+  "description": "This package is defined for nodejs files that can interact with the backend traffic lights.",
+  "main": "enterData.js",
+  "scripts": {
+    "test": "none"
+  },
+  "repository": {
+    "type": "git",
+    "url": "noe"
+  },
+  "keywords": [
+    "none"
+  ],
+  "author": "Arnav Gaur",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}

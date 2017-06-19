@@ -2,11 +2,12 @@ var express = require("express");
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/TrafficLights";
 var app = express();
+var path = require('path');
 var bodyParser = require('body-parser');
 
 //Headers set here:
 // Add headers
-app.use(function (req, res, next) {
+/*app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -27,7 +28,7 @@ app.use(function (req, res, next) {
 
     // Pass to next layer of middleware
     next();
-});
+});*/
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -45,7 +46,7 @@ app.post("/populateMap", function(request, response)
        });
    });
 
-var server = app.listen(8081, function()
+var server = app.listen(80, function()
 {
     var host = server.address().address;
     var port = server.address().port;
@@ -54,8 +55,10 @@ var server = app.listen(8081, function()
 })
 
 
+app.use(express.static(path.join("", 'public')));
+
 // Where I should receive data from JS written in index.html
-app.post('/', function(req, res) {
+app.post('/svPositions', function(req, res) {
 
 
     var place = req.body.placeId;

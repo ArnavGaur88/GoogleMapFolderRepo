@@ -47,6 +47,9 @@
     var geovar, MongoClient;
     var mainMarker;
 
+    //Url for the website
+    var webUrl = "map.gvctraffic.in";
+
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: -34.397, lng: 150.644},
@@ -120,13 +123,13 @@
                         var infowindow = new google.maps.InfoWindow;
                         var marker = new google.maps.Marker({
                          position: loc,
-			             icon: 'trafficSignal.jpeg',
+			             icon: 'testSignal.jpeg',
                          map: map
                          });
 
                         google.maps.event.addListener(marker, 'click', function(){
                             var sendReq = new XMLHttpRequest();
-                            sendReq.open('POST', 'http://139.59.43.69:80/checkMap', true);
+                            sendReq.open('POST', weburl+'/checkMap', true);
                             sendReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                             sendReq.onreadystatechange = function()
                             {
@@ -154,7 +157,7 @@
                         var sendData = {placeId: results[1].place_id, address: results[1].formatted_address, sno: serial, dsc: desc, location: loc};
 
                         var request = new XMLHttpRequest();
-                        request.open('POST', 'http://139.59.43.68:80/svPositions', true);
+                        request.open('POST', webUrl+'/svPositions', true);
                         request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                         request.send(JSON.stringify(sendData));
 
@@ -176,7 +179,7 @@
            var loc;
 
    var reqst = new XMLHttpRequest();
-   reqst.open("POST","http://139.59.43.69:80/populateMap", true);
+   reqst.open("POST",webUrl+"/populateMap", true);
    reqst.onreadystatechange=function(){
     if (reqst.readyState==4 && reqst.status==200){
            loc = JSON.parse(reqst.responseText);
@@ -185,7 +188,7 @@
            {
                var marker = new google.maps.Marker({
                    position: {lat: loc[i].location.lat, lng: loc[i].location.lng},
-                   icon: 'trafficSignal.jpeg',
+                   icon: 'testSignal.jpeg',
                    //onclick: markerClick(this.position),
                    map: map
                });
@@ -193,7 +196,7 @@
                google.maps.event.addListener(marker, 'click', function(){
                    if(confirm("Do you want to delete this Traffic Light?")) {
                        var req = new XMLHttpRequest();
-                       req.open('POST', 'http://localhost:80/remove', true);
+                       req.open('POST', webUrl+'/remove', true);
                        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                        req.onreadystatechange = function() {
                            //Location data
@@ -207,7 +210,7 @@
                    else
                    {
                        var sendReq = new XMLHttpRequest();
-                       sendReq.open('POST', 'http://139.59.43.69:80/checkMap', true);
+                       sendReq.open('POST', webUrl+'/checkMap', true);
                        sendReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                        sendReq.onreadystatechange = function () {
                            if (sendReq.readyState == 4 && sendReq.status == 200) {

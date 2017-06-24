@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 //Headers set here:
 // Add headers
-/*app.use(function (req, res, next) {
+app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -23,12 +23,12 @@ var bodyParser = require('body-parser');
     res.setHeader('Access-Control-Allow-Credentials', true);
 
     //Making sure response is sent as JSON
-    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Content-Type", "text/html");
     
 
     // Pass to next layer of middleware
     next();
-});*/
+});
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded

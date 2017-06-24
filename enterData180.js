@@ -67,7 +67,7 @@ app.post('/svPositions', function(req, res) {
     var d = req.body.dsc;
     var loc = req.body.location;
 
-    var doc = {placeId: place, address: ad, sno: s, dsc: d, location: loc};
+    var doc = {_id: place, placeId: place, address: ad, sno: s, dsc: d, location: loc};
 
     MongoClient.connect(url, function(err, db)
     {

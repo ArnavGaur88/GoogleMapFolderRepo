@@ -237,17 +237,16 @@
                     });
 
                     //Add a mouse-hover event
-                    marker.addListener('mouseover', function()
+                    google.maps.addListener(marker, 'mouseover', function()
                     {
-                        var descWindow = new google.maps.InfoWindow();
-                        descWindow.setPosition(this.position);
-                        descWindow.setContent("Working or Not");
-                        descWindow.open(map);
+                        infoWindow.setPosition(this.position);
+                        infoWindow.setContent("Working Or Not");
+                        infoWindow.open(map);
                     });
 
-                    marker.addListener('mouseout', function()
+                    google.maps.addListener(marker, 'mouseout', function()
                     {
-                       descWindow.map(null); 
+                       infoWindow.close();
                     });
                 }
             }

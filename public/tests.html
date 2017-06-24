@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <title>Geolocation</title>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 80%;
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<center>Enter Description of Area Selected</center>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <textarea rows="3" style="min-width: 100%" id="descBox"></textarea>
+        </div>
+    </div>
+    <br>
+    <center><b>Enter Serial Number</b></center>
+    <div class="row">
+        <div class="col-md-12">
+            <input type="text" style="min-width: 100%" id="serialBox">
+            <button id="sendingDataButton" onclick="saveMarker()">Save Marker Position</button>
+        </div>
+    </div>
+</div>
+<script>
+    // Note: This example requires that you consent to location sharing when
+    // prompted by your browser. If you see the error "The Geolocation service
+    // failed.", it means you probably did not give permission for the browser to
+    // locate you.
+    var map, infoWindow;
+    var geovar, MongoClient;
+    var mainMarker;
+
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: -34.397, lng: 150.644},
+            zoom: 13
+        });
+        mainMarker = new google.maps.Marker({
+            label: 'M', position: {lat: -34.397, lng: 150.644},
+            map: map
+        });
+        infoWindow = new google.maps.InfoWindow;
+        geovar = new google.maps.Geocoder;
+
+        google.maps.event.addListener(map, 'click', function (event) {
+            addMarker(map, event.latLng)
+        });
+
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                infoWindow.setPosition(pos);
+                infoWindow.setContent('Location found.');
+                infoWindow.open(map);
+
+                populateMap(); //making sure that previously added markers are present
+
+                mainMarker = new google.maps.Marker({
+                    position: pos,
+                    label: 'M',
+                    map: map
+                });
+                map.setCenter(pos);
+                map.setZoom(15);
+
+            }, function () {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+    }
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+            'Error: The Geolocation service failed.' :
+            'Error: Your browser doesn\'t support geolocation.');
+        infoWindow.open(map);
+    }
+
+    function addMarker(map, loc) {
+        mainMarker.setPosition(loc);
+    }
+
+    function saveMarker() {
+        var loc = mainMarker.getPosition();
+
+        //Description and serial number entered by the user
+        var serial, desc;
+        serial = document.getElementById("serialBox").value;
+        desc = document.getElementById("descBox").value;
+
+        if (serial != "" && desc != "") {
+            geovar.geocode({'location': loc}, function (results, status) {
+                if (status === 'OK') {
+
+                    if (results[1]) {
+                        var infowindow = new google.maps.InfoWindow;
+                        var marker = new google.maps.Marker({
+                            position: loc,
+                            icon: 'testSignal.jpeg',
+                            map: map
+                        });
+
+                        google.maps.event.addListener(marker, 'click', function () {
+                            var sendReq = new XMLHttpRequest();
+                            sendReq.open('POST', 'http://139.59.43.69/checkMap', true);
+                            sendReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            sendReq.onreadystatechange = function () {
+                                if (sendReq.readyState == 4 && sendReq.status == 200) {
+                                    //Finding location area
+                                    var data = sendReq.responseText;
+
+                                    //Area for Description
+                                    var dscArea = data.indexOf("dsc");
+                                    var locArea = data.indexOf("location");
+                                    var locationDsc = data.substring(dscArea + 6, locArea - 3);
+                                    window.alert("Dsc : " + locationDsc);
+                                }
+                            }
+                            var sendData = {lat: this.position.lat(), lng: this.position.lng()};
+                            console.log(sendData);
+                            sendReq.send(JSON.stringify(sendData));
+                        });
+
+                        infowindow.setPosition(loc);
+                        infowindow.setContent(results[1].formatted_address + "\n" + results[1].place_id);
+                        infowindow.open(map);
+
+                        var sendData = {
+                            placeId: results[1].place_id,
+                            address: results[1].formatted_address,
+                            sno: serial,
+                            dsc: desc,
+                            location: loc
+                        };
+
+                        var request = new XMLHttpRequest();
+                        request.open('POST', 'http://139.59.43.69/svPositions', true);
+                        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                        request.send(JSON.stringify(sendData));
+
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    window.alert('Geocoder failed due to: ' + status);
+
+                }
+            });
+        }
+        else
+            window.alert("Please check you have entered serial number and description!");
+    }
+    function populateMap() {
+        var loc;
+
+        var reqst = new XMLHttpRequest();
+        reqst.open("POST", "http://139.59.43.69/populateMap", true);
+
+        reqst.onreadystatechange = function () {
+            if (reqst.readyState == 4 && reqst.status == 200) {
+                loc = JSON.parse(reqst.responseText);
+
+                for (var i = 0; i < loc.length; i++) {
+                    var marker = new google.maps.Marker({
+                        position: {lat: loc[i].location.lat, lng: loc[i].location.lng},
+                        icon: 'testSignal.jpeg',
+                        //onclick: markerClick(this.position),
+                        map: map
+                    });
+
+                    google.maps.event.addListener(marker, 'click', function () {
+                        if (confirm("Do you want to delete this Traffic Light?")) {
+                            var req = new XMLHttpRequest();
+                            req.open('POST', 'http://139.59.43.69/remove', true);
+                            req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            req.onreadystatechange = function () {
+                                //Location data
+                                marker.setMap(null);
+                            }
+                            var sendData = {lat: this.position.lat(), lng: this.position.lng()};
+                            console.log("Sending for deletion: ");
+                            console.log(sendData);
+                            req.send(JSON.stringify(sendData));
+                        }
+                        else {
+                            var sendReq = new XMLHttpRequest();
+                            sendReq.open('POST', 'http://139.59.43.69/checkMap', true);
+                            sendReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            sendReq.onreadystatechange = function () {
+                                if (sendReq.readyState == 4 && sendReq.status == 200) {
+                                    //Finding location area
+                                    var data = sendReq.responseText;
+
+                                    //Area for Description
+                                    var dscArea = data.indexOf("dsc");
+                                    var locArea = data.indexOf("location");
+                                    var locationDsc = data.substring(dscArea + 6, locArea - 3);
+
+                                    window.alert("Dsc : " + locationDsc);
+                                }
+                            }
+                            var sendData = {lat: this.position.lat(), lng: this.position.lng()};
+                            console.log(sendData);
+                            sendReq.send(JSON.stringify(sendData));
+                        }
+                    });
+
+                    //Add a mouse-hover event
+                    marker.addListener('mouseover', function()
+                    {
+                        var descWindow = new google.maps.InfoWindow();
+                        descWindow.setPosition(this.position);
+                        descWindow.setContent("Working or Not");
+                        descWindow.open(map);
+                    });
+
+                    marker.addListener('mouseout', function()
+                    {
+                       descWindow.map(null); 
+                    });
+                }
+            }
+        }
+        reqst.send();
+    }
+
+    //google.maps.event.addDomListener(window, 'load', initialize);
+
+
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBppNHjpLzKpcGcfBMjx6Nd42UBoLy5S58&callback=initMap">
+</script>
+</body>
+</html>

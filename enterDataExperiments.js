@@ -66,7 +66,7 @@ app.post('/svPositions', function(req, res) {
     var s = req.body.sno;
     var d = req.body.dsc;
     var loc = req.body.location;
-    var stat = req.body.stat; //Status of the traffic light, whether it is working or not.
+    var stat = req.body.status; //Status of the traffic light, whether it is working or not.
 
     var doc = {_id: place, placeId: place, address: ad, sno: s, dsc: d, location: loc, status: stat};
 

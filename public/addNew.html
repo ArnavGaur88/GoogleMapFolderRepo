@@ -54,11 +54,11 @@
 
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: -34.397, lng: 150.644},
+            center: {lat: 28.5446, lng: 77.3331},
             zoom: 13
         });
         mainMarker = new google.maps.Marker({
-            label: 'M', position: {lat: -34.397, lng: 150.644},
+            label: 'M', position: {lat: 28.5446, lng: 77.3331},
             map: map
         });
         infoWindow = new google.maps.InfoWindow;
@@ -69,7 +69,7 @@
         });
 
         // Try HTML5 geolocation.
-        if (navigator.geolocation) {
+       /* if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 var pos = {
                     lat: position.coords.latitude,
@@ -96,16 +96,16 @@
         } else {
             // Browser doesn't support Geolocation
             handleLocationError(false, infoWindow, map.getCenter());
-        }
+        }*/
     }
 
-    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    /*function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
         infoWindow.setContent(browserHasGeolocation ?
             'Error: The Geolocation service failed.' :
             'Error: Your browser doesn\'t support geolocation.');
         infoWindow.open(map);
-    }
+    }*/
 
     function addMarker(map, loc) {
         mainMarker.setPosition(loc);
@@ -161,6 +161,7 @@
                             address: results[1].formatted_address,
                             sno: serial,
                             dsc: desc,
+                            status: "Working",
                             location: loc
                         };
 
@@ -192,12 +193,23 @@
                 loc = JSON.parse(reqst.responseText);
 
                 for (var i = 0; i < loc.length; i++) {
-                    var marker = new google.maps.Marker({
-                        position: {lat: loc[i].location.lat, lng: loc[i].location.lng},
-                        icon: 'testSignal.jpeg',
-                        //onclick: markerClick(this.position),
-                        map: map
-                    });
+
+                    if(loc[i].status == "Working") {
+                        var marker = new google.maps.Marker({
+                            position: {lat: loc[i].location.lat, lng: loc[i].location.lng},
+                            icon: 'testSignal.jpeg',
+                            //onclick: markerClick(this.position),
+                            map: map
+                        });
+                    }
+                    else
+                    {
+                        var marker = new google.maps.Marker({
+                            position: {lat: loc[i].location.lat, lng: loc[i].location.lng},
+                            icon: "notWorking.jpeg",
+                            map: map
+                        });
+                    }
 
                     google.maps.event.addListener(marker, 'click', function () {
                         if (confirm("Do you want to delete this Traffic Light?")) {

@@ -39,8 +39,9 @@ app.post("/populateMap", function(request, response)
     var stringified;
    
    MongoClient.connect(url, function(err, db){
-       db.collection('TrafficTable').find({}, {'location': true, '_id': false}).toArray(function(err, doc){
+       db.collection('TrafficTable').find({}, {'location': true, '_id': false, 'status': true}).toArray(function(err, doc){
            stringified = JSON.stringify(doc);
+           console.log(doc);
            response.send(stringified);
        });
        });
@@ -66,8 +67,9 @@ app.post('/svPositions', function(req, res) {
     var s = req.body.sno;
     var d = req.body.dsc;
     var loc = req.body.location;
+    var stat = req.body.status;
 
-    var doc = {_id: place, placeId: place, address: ad, sno: s, dsc: d, location: loc};
+    var doc = {_id: place, placeId: place, address: ad, sno: s, dsc: d, location: loc, status: stat};
 
     MongoClient.connect(url, function(err, db)
     {

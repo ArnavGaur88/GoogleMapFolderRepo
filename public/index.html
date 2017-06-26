@@ -1,3 +1,11 @@
+/*
+at power on goto GVC Location
+add map search also or may be search for traffic signal
+edit functionality
+*/
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,7 +15,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <title>Geolocation</title>
+    <title>GVC Maps</title>
     <style>
         /* Always set the map height explicitly to define the size of the div
          * element that contains the map. */
@@ -58,7 +66,7 @@
                 };
 
                 infoWindow.setPosition(pos);
-                infoWindow.setContent('Location found.');
+                infoWindow.setContent('You are here');
                 infoWindow.open(map);
 
                 populateMap(); //making sure that previously added markers are present

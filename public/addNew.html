@@ -68,6 +68,9 @@
             addMarker(map, event.latLng)
         });
 
+
+                populateMap(); //making sure that previously added markers are present
+
         // Try HTML5 geolocation.
        /* if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
@@ -79,8 +82,6 @@
                 infoWindow.setPosition(pos);
                 infoWindow.setContent('Location found.');
                 infoWindow.open(map);
-
-                populateMap(); //making sure that previously added markers are present
 
                 mainMarker = new google.maps.Marker({
                     position: pos,
@@ -195,13 +196,25 @@
                 for (var i = 0; i < loc.length; i++) {
 
                     if(loc[i].status == "Working") {
+
+			if(loc[i].status == "Working")
+		{
                         var marker = new google.maps.Marker({
                             position: {lat: loc[i].location.lat, lng: loc[i].location.lng},
                             icon: 'testSignal.jpeg',
                             //onclick: markerClick(this.position),
                             map: map
                         });
-                    }
+		}
+		else
+		{
+			var marker = new google.maps.Marker({
+				position: {lat: loc[i].location.lat, lng: loc[i].location.lng},
+				icon: "notWorking.jpeg",
+				map: map
+			});
+		} 
+                   }
                     else
                     {
                         var marker = new google.maps.Marker({

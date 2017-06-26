@@ -1,10 +1,3 @@
-/*
-at power on goto GVC Location
-add map search also or may be search for traffic signal
-edit functionality
-*/
-
-
 
 <!DOCTYPE html>
 <html>
@@ -46,18 +39,21 @@ edit functionality
 
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: -34.397, lng: 150.644},
+            center: {lat: 28.5446, lng: 77.3331},
             zoom: 13
         });
         mainMarker = new google.maps.Marker({
-            label: 'M', position: {lat: -34.397, lng: 150.644},
+            label: 'M', position: {lat: 28.5446, lng: 77.3331},
             map: map
         });
         infoWindow = new google.maps.InfoWindow;
         geovar = new google.maps.Geocoder;
 
 
-        // Try HTML5 geolocation.
+                populateMap(); //making sure that previously added markers are present
+
+
+        /*// Try HTML5 geolocation.
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 var pos = {
@@ -68,8 +64,6 @@ edit functionality
                 infoWindow.setPosition(pos);
                 infoWindow.setContent('You are here');
                 infoWindow.open(map);
-
-                populateMap(); //making sure that previously added markers are present
 
                 mainMarker = new google.maps.Marker({
                     position: pos,
@@ -85,16 +79,16 @@ edit functionality
         } else {
             // Browser doesn't support Geolocation
             handleLocationError(false, infoWindow, map.getCenter());
-        }
+        }*/
     }
 
-    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+/*    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
         infoWindow.setContent(browserHasGeolocation ?
             'Error: The Geolocation service failed.' :
             'Error: Your browser doesn\'t support geolocation.');
         infoWindow.open(map);
-    }
+    }*/
 
 
     function populateMap() {
@@ -108,12 +102,23 @@ edit functionality
                 loc = JSON.parse(reqst.responseText);
 
                 for (var i = 0; i < loc.length; i++) {
+		if(loc[i].status == "Working")
+		{	
                     var marker = new google.maps.Marker({
                         position: {lat: loc[i].location.lat, lng: loc[i].location.lng},
                         icon: 'testSignal.jpeg',
                         //onclick: markerClick(this.position),
                         map: map
                     });
+		}
+		else
+		{
+		    var marker = new google.maps.Marker({
+			position: {lat: loc[i].location.lat, lng: loc[i].location.lng},
+			icon: "notWorking.jpeg",
+			map: map
+			});
+		}
 
                     google.maps.event.addListener(marker, 'click', function () {
                         {

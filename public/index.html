@@ -38,12 +38,28 @@
 
 
     function initMap() {
+
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        console.log(url_string);
+
+        var locationLat, locationLng, zoomFactor;
+        locationLat = url.searchParams.get("lat");
+        locationLng = url.searchParams.get("lng");
+        zoomFactor = url.searchParams.get("zoom");
+
+        console.log(parseFloat(locationLat));
+        console.log(parseFloat(locationLng));
+        console.log(parseInt(zoomFactor));
+
+        var centerLocation = new google.maps.LatLng({lat: parseFloat(locationLat), lng: parseFloat(locationLng)});
+
         map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 28.5446, lng: 77.3331},
-            zoom: 13
+            center: centerLocation,
+            zoom: parseInt(zoomFactor)
         });
         mainMarker = new google.maps.Marker({
-            label: 'M', position: {lat: 28.5446, lng: 77.3331},
+            label: 'M', position: centerLocation,
             map: map
         });
         infoWindow = new google.maps.InfoWindow;
@@ -52,43 +68,7 @@
 
                 populateMap(); //making sure that previously added markers are present
 
-
-        /*// Try HTML5 geolocation.
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                var pos = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-
-                infoWindow.setPosition(pos);
-                infoWindow.setContent('You are here');
-                infoWindow.open(map);
-
-                mainMarker = new google.maps.Marker({
-                    position: pos,
-                    label: 'M',
-                    map: map
-                });
-                map.setCenter(pos);
-                map.setZoom(15);
-
-            }, function () {
-                handleLocationError(true, infoWindow, map.getCenter());
-            });
-        } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, infoWindow, map.getCenter());
-        }*/
     }
-
-/*    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        infoWindow.setPosition(pos);
-        infoWindow.setContent(browserHasGeolocation ?
-            'Error: The Geolocation service failed.' :
-            'Error: Your browser doesn\'t support geolocation.');
-        infoWindow.open(map);
-    }*/
 
 
     function populateMap() {

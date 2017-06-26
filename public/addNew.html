@@ -41,6 +41,12 @@
             <button id="sendingDataButton" onclick="saveMarker()">Save Marker Position</button>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <button id="statusButton" onclick="statusChange()" value="Working">Working</button>
+        </div>
+    </div>
 </div>
 <script>
     // Note: This example requires that you consent to location sharing when
@@ -53,12 +59,21 @@
 
 
     function initMap() {
+
+        var url_string = window.Location.href;
+        var url = new URL(url_string);
+
+        var locationLat, locationLng, zoomFactor;
+        locationLat = url.searchParams.get("lat");
+        locationLng = url.searchParams.get("lng");
+        zoomFactor = url.searchParams.get("zoom");
+
         map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 28.5446, lng: 77.3331},
-            zoom: 13
+            center: {lat: parseFloat(locationLat), lng: parseFloat(locationLng)},
+            zoom: parseInt(zoomFactor)
         });
         mainMarker = new google.maps.Marker({
-            label: 'M', position: {lat: 28.5446, lng: 77.3331},
+            label: 'M', position: {lat: parseFloat(loationLat), lng: parseFloat(locationLng)},
             map: map
         });
         infoWindow = new google.maps.InfoWindow;
@@ -68,45 +83,11 @@
             addMarker(map, event.latLng)
         });
 
-
-                populateMap(); //making sure that previously added markers are present
-
-        // Try HTML5 geolocation.
-       /* if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                var pos = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-
-                infoWindow.setPosition(pos);
-                infoWindow.setContent('Location found.');
-                infoWindow.open(map);
-
-                mainMarker = new google.maps.Marker({
-                    position: pos,
-                    label: 'M',
-                    map: map
-                });
-                map.setCenter(pos);
-                map.setZoom(15);
-
-            }, function () {
-                handleLocationError(true, infoWindow, map.getCenter());
-            });
-        } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, infoWindow, map.getCenter());
-        }*/
+        populateMap(); //making sure that previously added markers are present
     }
 
-    /*function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        infoWindow.setPosition(pos);
-        infoWindow.setContent(browserHasGeolocation ?
-            'Error: The Geolocation service failed.' :
-            'Error: Your browser doesn\'t support geolocation.');
-        infoWindow.open(map);
-    }*/
+
+
 
     function addMarker(map, loc) {
         mainMarker.setPosition(loc);

@@ -276,7 +276,7 @@
                             sendReq.send(JSON.stringify(sendData));
 
                             //Remove from the array
-                            for(var i = 0; i < markerPositions.length, i++)
+                            for(var i = 0; i < markerPositions.length; i++)
                             {
                                 if(markerPositions[i].Sno == document.getElementById("serialBox").value)
                                 {
@@ -308,17 +308,6 @@
                                 if (sendReq.readyState == 4 && sendReq.status == 200) {
                                     //Finding location area
                                     var data = sendReq.responseText;
-
-                                    /*if(data.indexOf("status") == "Working")
-                                    {
-                                        document.getElementById("statusButton").value = "Working";
-                                        this.setIcon("testSignal.jpeg");
-                                    }
-                                    else
-                                    {
-                                        document.getElementById("statusButton").value = "Not Working";
-                                        this.setIcon("notWorking.jpeg");
-                                    }*/
 
                                     //Area for Description
                                     var dscArea = data.indexOf("dsc");

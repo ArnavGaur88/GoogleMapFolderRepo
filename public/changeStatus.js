@@ -46,8 +46,8 @@ function onConnectionLost(responseObject) {
 function onMessageArrived(message) {
     console.log("onMessageArrived:" + message.payloadString);
 
-    var serial = payloadString.indexOf("Sno");
-    var stat = payloadString.indexOf("status");
+    var serial = message.payloadString.indexOf("Sno");
+    var stat = message.payloadString.indexOf("status");
 
     //markerPositions is defined in index.html as well as addNew.html
     for(var i = 0; i < markerPositions.length; i++)

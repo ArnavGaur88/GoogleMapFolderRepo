@@ -38,13 +38,8 @@
     <div class="row">
         <div class="col-md-12">
             <input type="text" style="min-width: 100%" id="serialBox">
+            <input type="button" onclick="statusChange()" id="statusButton" value="Working">
             <button id="sendingDataButton" onclick="saveMarker()">Save Marker Position</button>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <button id="statusButton" onclick="statusChange()" value="Working">Working</button>
         </div>
     </div>
 </div>
@@ -57,23 +52,60 @@
     var geovar, MongoClient;
     var mainMarker;
 
+    function statusChange()
+    {
+        if(document.getElementById("statusButton").value == "Working") {
+            document.getElementById("statusButton").value = "Not Working";
+
+            //Get serial number and use that to change the status in backend
+            var serial = document.getElementById("serialBox").value;
+            var stat = "Not Working";
+
+            var sendData = {serial: serial, stat: stat};
+
+            var request = new XMLHttpRequest();
+            request.open('POST', 'http://139.59.43.69/changeStatus', true);
+            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            request.send(JSON.stringify(sendData));
+
+            populateMap(); //Refresh the entire map
+        }
+        else
+        {
+            document.getElementById("statusButton").value = "Working";
+
+            //Get serial number and use that to change the status in backend
+            var serial = document.getElementById("serialBox").value;
+            var stat = "Working";
+
+            var sendData = {serial: serial, stat: stat};
+
+            var request = new XMLHttpRequest();
+            request.open("POST", "http://139.59.43.69/changeStatus", true);
+            request.setRequestHeader("Content-Type", "applicaion/json;charset=UTF-8");
+            request.send(JSON.stringify(sendData));
+
+            populateMap(); //Refresh the entire map
+        }
+    }
+
 
     function initMap() {
 
-        var url_string = window.Location.href;
+        var url_string = window.location.href;
         var url = new URL(url_string);
 
         var locationLat, locationLng, zoomFactor;
         locationLat = url.searchParams.get("lat");
         locationLng = url.searchParams.get("lng");
-        zoomFactor = url.searchParams.get("zoom");
+        zoomFactor = url.searchParams.get("zoomFactor");
 
         map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: parseFloat(locationLat), lng: parseFloat(locationLng)},
             zoom: parseInt(zoomFactor)
         });
         mainMarker = new google.maps.Marker({
-            label: 'M', position: {lat: parseFloat(loationLat), lng: parseFloat(locationLng)},
+            label: 'M', position: {lat: parseFloat(locationLat), lng: parseFloat(locationLng)},
             map: map
         });
         infoWindow = new google.maps.InfoWindow;
@@ -227,6 +259,17 @@
                                 if (sendReq.readyState == 4 && sendReq.status == 200) {
                                     //Finding location area
                                     var data = sendReq.responseText;
+
+                                    if(data.indexOf("status") == "Working")
+                                    {
+                                        document.getElementById("statusButton").value = "Working";
+                                        this.setIcon("testSignal.jpeg");
+                                    }
+                                    else
+                                    {
+                                        document.getElementById("statusButton").value = "Not Working";
+                                        this.setIcon("notWorking.jpeg");
+                                    }
 
                                     //Area for Description
                                     var dscArea = data.indexOf("dsc");

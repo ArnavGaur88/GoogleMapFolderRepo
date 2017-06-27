@@ -103,3 +103,14 @@ app.post('/remove', function(request, response){
        db.collection('TrafficTable').remove({"location": {"lat": request.body.lat, "lng": request.body.lng}});
    })
 });
+
+app.post('/changeStatus', function(request, response){
+    var data = request.body.serial;
+    var stat = request.body.stat;
+    console.log("Serial number received: " + request.body.serial);
+    console.log("Changing status to: " + stat);
+
+    MongoClient.connect(url, function(err, db){
+        db.collection("TrafficTable").update({"sno": data}, {"status": stat});
+    })
+});

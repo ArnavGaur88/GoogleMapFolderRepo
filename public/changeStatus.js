@@ -68,7 +68,7 @@ function onMessageArrived(message) {
 
 
     var request = new XMLHttpRequest();
-    request.open('POST', 'http://localhost:8081/changeStatus', true);
+    request.open('POST', 'http://139.59.43.69/changeStatus', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.send(JSON.stringify(sendData));
 

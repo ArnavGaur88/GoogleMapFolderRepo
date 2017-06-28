@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1f54129a-3a13-457d-94a8-e4f28f8a2bbb" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/enterData180.js" afterPath="$PROJECT_DIR$/enterData180.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/addNew.html" afterPath="$PROJECT_DIR$/public/addNew.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/changeStatus.js" afterPath="$PROJECT_DIR$/public/changeStatus.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/index.html" afterPath="$PROJECT_DIR$/public/index.html" />
@@ -23,18 +22,7 @@
     <favorites_list name="GoogleMapFolder" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="changeStatus.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/public/changeStatus.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="147">
-              <caret line="54" column="69" lean-forward="false" selection-start-line="54" selection-start-column="69" selection-end-line="54" selection-end-column="69" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -78,10 +66,10 @@
         <option value="$PROJECT_DIR$/public/tests.html" />
         <option value="$PROJECT_DIR$/public/Editing.html" />
         <option value="$PROJECT_DIR$/enterDataExperiments.js" />
-        <option value="$PROJECT_DIR$/public/addNew.html" />
-        <option value="$PROJECT_DIR$/public/index.html" />
         <option value="$PROJECT_DIR$/enterData180.js" />
         <option value="$PROJECT_DIR$/public/changeStatus.js" />
+        <option value="$PROJECT_DIR$/public/addNew.html" />
+        <option value="$PROJECT_DIR$/public/index.html" />
       </list>
     </option>
   </component>
@@ -120,8 +108,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -150,6 +136,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -270,11 +258,12 @@
       <workItem from="1498635017385" duration="395000" />
       <workItem from="1498635632472" duration="6776000" />
       <workItem from="1498645819833" duration="97000" />
+      <workItem from="1498646101011" duration="107000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30241000" />
+    <option name="totallyTimeSpent" value="30348000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -286,7 +275,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24963397" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -318,6 +307,14 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/public/changeStatus.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/public/addNew.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -478,28 +475,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="87">
-          <caret line="110" column="0" lean-forward="true" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/addNew.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="189" column="26" lean-forward="true" selection-start-line="189" selection-start-column="26" selection-end-line="189" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/enterData180.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="95" column="0" lean-forward="true" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/enterDataExperiments.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="337">
@@ -510,8 +485,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/changeStatus.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="54" column="69" lean-forward="false" selection-start-line="54" selection-start-column="69" selection-end-line="54" selection-end-column="69" />
+        <state relative-caret-position="419">
+          <caret line="70" column="45" lean-forward="false" selection-start-line="70" selection-start-column="45" selection-end-line="70" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/enterData180.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="95" column="0" lean-forward="true" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/addNew.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="54" column="43" lean-forward="false" selection-start-line="54" selection-start-column="43" selection-end-line="54" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="38" column="43" lean-forward="false" selection-start-line="38" selection-start-column="43" selection-end-line="38" selection-end-column="43" />
           <folding />
         </state>
       </provider>

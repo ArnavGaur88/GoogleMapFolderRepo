@@ -46,18 +46,21 @@ function onConnectionLost(responseObject) {
 function onMessageArrived(message) {
     console.log("onMessageArrived:" + message.payloadString);
 
-    var serial = message.payloadString.indexOf("Sno");
-    var stat = message.payloadString.indexOf("status");
+    var serial = message.payloadString.substring(5, message.payloadString.indexOf("status") - 1);
+    var stat = message.payloadString.substring(message.payloadString.indexOf("status") + 8);
+
+    console.log("Serial = " + serial);
+    console.log("Status = " + stat);
 
     //markerPositions is defined in index.html as well as addNew.html
     for(var i = 0; i < markerPositions.length; i++)
     {
-        if(markerPositions[i] != null)
-        {
-            //Reflect the change in the main page
-            if(markerPositions[i].Sno == serial)
-                markerPositions[i].setLabel = ''+stat;
+        if(markerPositions[i].sno == serial) {
+            console.log("Found you!");
+            markerPositions[i].marker.setLabel('' + stat);
         }
+
+        console.log(markerPositions[i].sno);
     }
 
     //change status of markerPositions[i] in back-end
@@ -65,7 +68,7 @@ function onMessageArrived(message) {
 
 
     var request = new XMLHttpRequest();
-    request.open('POST', 'http://139.59.43.69/changeStatus', true);
+    request.open('POST', 'http://localhost:8081/changeStatus', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.send(JSON.stringify(sendData));
 

@@ -46,13 +46,21 @@
     function initMap() {
 
         var url_string = window.location.href;
-        var url = new URL(url_string);
-        console.log(url_string);
-
         var locationLat, locationLng, zoomFactor;
-        locationLat = url.searchParams.get("lat");
-        locationLng = url.searchParams.get("lng");
-        zoomFactor = url.searchParams.get("zoom");
+
+        if(url_string.indexOf("lat") != -1 && url_string.indexOf("lng") != -1 && url_string.indexOf("zoom") != -1) {
+            var url = new URL(url_string);
+
+            locationLat = url.searchParams.get("lat");
+            locationLng = url.searchParams.get("lng");
+            zoomFactor = url.searchParams.get("zoom");
+        }
+        else
+        {
+            locationLat = 28.5446;
+            locationLng = 77.3331;
+            zoomFactor = 14;
+        }
 
         console.log(parseFloat(locationLat));
         console.log(parseFloat(locationLng));
@@ -64,10 +72,10 @@
             center: centerLocation,
             zoom: parseInt(zoomFactor)
         });
-        mainMarker = new google.maps.Marker({
+        /*mainMarker = new google.maps.Marker({
             label: 'M', position: centerLocation,
             map: map
-        });
+        });*/
         infoWindow = new google.maps.InfoWindow;
         geovar = new google.maps.Geocoder;
 

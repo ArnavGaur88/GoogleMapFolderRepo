@@ -28,7 +28,7 @@ function onConnect() {
     // Once a connection has been made, make a subscription and send a message.
     connected = true;
     console.log("onConnect");
-    var message = new Paho.MQTT.Message("Subscribed to topic");
+    var message = new Paho.MQTT.Message("Connected");
     message.destinationName = 'TrafficLights';
     client.subscribe(topic);
     client.send(message);
@@ -38,6 +38,9 @@ function onConnect() {
 function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
         console.log("onConnectionLost:" + responseObject.errorMessage);
+        connected = false;
+        console.log("Trying to reconnect");
+        client.connect(options);
     }
 }
 

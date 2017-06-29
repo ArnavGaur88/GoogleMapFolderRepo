@@ -69,10 +69,16 @@ app.post('/svPositions', function(req, res) {
     var loc = req.body.location;
     var stat = req.body.status;
 
-    var doc = {_id: place, placeId: place, address: ad, sno: s, dsc: d, location: loc, status: stat};
+    var doc = {_id: s, placeId: place, address: ad, sno: s, dsc: d, location: loc, status: stat};
 
     MongoClient.connect(url, function(err, db)
     {
+        if(err)
+        {
+            window.alert("An error has occurred. It may be possible that the serial number you are trying to enter already exists" +
+                " within our database");
+        }
+
         db.collection('TrafficTable').update(
             doc,
             doc,

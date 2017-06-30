@@ -33,8 +33,7 @@
     // failed.", it means you probably did not give permission for the browser to
     // locate you.
     var map, infoWindow;
-    var geovar, MongoClient;
-    var mainMarker;
+    var geovar;
 
     var serverLocUrl = "http://139.59.43.69";
 
@@ -72,10 +71,7 @@
             center: centerLocation,
             zoom: parseInt(zoomFactor)
         });
-        /*mainMarker = new google.maps.Marker({
-            label: 'M', position: centerLocation,
-            map: map
-        });*/
+
         infoWindow = new google.maps.InfoWindow;
         geovar = new google.maps.Geocoder;
 
@@ -107,7 +103,7 @@
                     markerPositions[markerIterator] = {marker: marker, sno: loc[i].sno};
                     markerIterator += 1;
 
-                    google.maps.event.addListener(marker, 'click', function () {
+                    google.maps.event.addListener(marker, 'mouseover', function () {
                         {
                             var sendReq = new XMLHttpRequest();
                             sendReq.open('POST', serverLocUrl+'/checkMap', true);
@@ -121,8 +117,23 @@
                                     var dscArea = data.indexOf("dsc");
                                     var locArea = data.indexOf("location");
                                     var locationDsc = data.substring(dscArea + 6, locArea - 3);
+                                    var serialDest = data.substring(data.indexOf("sno") + 6, dscArea - 3);
 
-                                    window.alert("Dsc : " + locationDsc);
+                                    /*window.alert("Dsc : " + locationDsc);
+                                    window.alert("SNO: " + serialDest);*/
+
+                                    var infoPosition = data.substring(locArea + 11, data.indexOf("status") - 3);
+
+                                    var infoPositionLat = parseFloat(infoPosition.substring(infoPosition.indexOf("lat") + 5,
+                                        infoPosition.indexOf("lng") - 2));
+
+                                    var infoPositionLng = parseFloat(infoPosition.substring(infoPosition.indexOf("lng") + 5));
+
+                                    var pos = new google.maps.LatLng({lat: infoPositionLat, lng: infoPositionLng});
+
+                                    infoWindow.setPosition(pos);
+                                    infoWindow.setContent("Description: " + locationDsc + "\n Serial Number: " + serialDest);
+                                    infoWindow.open(map);
                                 }
                             }
                             var sendData = {lat: this.position.lat(), lng: this.position.lng()};
@@ -130,6 +141,10 @@
                             sendReq.send(JSON.stringify(sendData));
                         }
                     });
+
+                    google.maps.event.addListener(marker, 'mouseout', function() {
+                        infoWindow.setMap(null);
+                    })
                 }
             }
         }

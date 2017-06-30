@@ -39,7 +39,25 @@ function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
         console.log("onConnectionLost:" + responseObject.errorMessage);
         connected = false;
+        reconnectLogic();
+        /*connected = false;
         console.log("Trying to reconnect");
+        client.connect(options);*/
+    }
+}
+
+function reconnectLogic()
+{
+    while(connected == false)
+    {
+
+        var options = {
+            useSSL: true,
+            userName: "sxdzesyk",
+            password: "dc_pY7Q7gOTw",
+            onSuccess:onConnect
+        }
+
         client.connect(options);
     }
 }
@@ -59,11 +77,8 @@ function onMessageArrived(message) {
     for(var i = 0; i < markerPositions.length; i++)
     {
         if(markerPositions[i].sno == serial) {
-            console.log("Found you!");
             markerPositions[i].marker.setLabel('' + stat);
         }
-
-        console.log(markerPositions[i].sno);
     }
 
     //change status of markerPositions[i] in back-end

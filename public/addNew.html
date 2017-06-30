@@ -127,7 +127,7 @@
                         markerPositions[markerIterator] = {marker: marker, sno: serial};
                             markerIterator += 1;
 
-                        google.maps.event.addListener(marker, 'click', function () {
+                        google.maps.event.addListener(marker, 'mouseover', function () {
                             var sendReq = new XMLHttpRequest();
                             sendReq.open('POST', serverLocUrl+'/checkMap', true);
                             sendReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -150,6 +150,11 @@
                             var sendData = {lat: this.position.lat(), lng: this.position.lng()};
                             console.log(sendData);
                             sendReq.send(JSON.stringify(sendData));
+                        });
+
+                        google.maps.event.addListener(marker, 'mouseout', function() {
+                           document.getElementById("descBox").value = "";
+                           document.getElementById("serialBox").value = "";
                         });
 
                         infowindow.setPosition(loc);
@@ -256,7 +261,7 @@
                             console.log(sendData);
                             req.send(JSON.stringify(sendData));
                         }
-                        else {
+                        /*else {
                             var sendReq = new XMLHttpRequest();
                             sendReq.open('POST', serverLocUrl+'/checkMap', true);
                             sendReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -280,8 +285,41 @@
                             var sendData = {lat: this.position.lat(), lng: this.position.lng()};
                             console.log(sendData);
                             sendReq.send(JSON.stringify(sendData));
-                        }
+                        }*/
                     });
+
+                    google.maps.event.addListener(marker, 'mouseover', function() {
+
+                        //Show data in the boxes
+                        var sendReq = new XMLHttpRequest();
+                        sendReq.open('POST', serverLocUrl+'/checkMap', true);
+                        sendReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                        sendReq.onreadystatechange = function () {
+                            if (sendReq.readyState == 4 && sendReq.status == 200) {
+                                //Finding location area
+                                var data = sendReq.responseText;
+
+                                //Area for Description
+                                var dscArea = data.indexOf("dsc");
+                                var locArea = data.indexOf("location");
+                                var locationDsc = data.substring(dscArea + 6, locArea - 3);
+                                var serialArea = data.substring(data.indexOf("sno") + 6, data.indexOf("dsc") - 3);
+
+                                //window.alert("Dsc : " + locationDsc);
+
+                                document.getElementById("descBox").value = locationDsc;
+                                document.getElementById("serialBox").value = serialArea;
+                            }
+                        }
+                        var sendData = {lat: this.position.lat(), lng: this.position.lng()};
+                        console.log(sendData);
+                        sendReq.send(JSON.stringify(sendData));
+                    });
+
+                    google.maps.event.addListener(marker, 'mouseout', function() {
+                        document.getElementById("descBox").value = "";
+                        document.getElementById("serialBox").value = "";
+                    })
                 }
             }
         }

@@ -39,7 +39,7 @@ app.post("/populateMap", function(request, response)
     var stringified;
    
    MongoClient.connect(url, function(err, db){
-       db.collection('TrafficTable').find({}, {'location': true, '_id': false, 'status': true}).toArray(function(err, doc){
+       db.collection('TrafficTable').find({}, {'location': true, '_id': false, 'status': true, 'sno': true}).toArray(function(err, doc){
            stringified = JSON.stringify(doc);
            console.log(doc);
            response.send(stringified);

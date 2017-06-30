@@ -38,27 +38,9 @@ function onConnect() {
 function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
         console.log("onConnectionLost:" + responseObject.errorMessage);
-        connected = false;
-        reconnectLogic();
         /*connected = false;
         console.log("Trying to reconnect");
         client.connect(options);*/
-    }
-}
-
-function reconnectLogic()
-{
-    while(connected == false)
-    {
-
-        var options = {
-            useSSL: true,
-            userName: "sxdzesyk",
-            password: "dc_pY7Q7gOTw",
-            onSuccess:onConnect
-        }
-
-        client.connect(options);
     }
 }
 

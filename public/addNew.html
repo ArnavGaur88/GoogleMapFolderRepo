@@ -52,7 +52,11 @@
     var geovar, MongoClient;
     var mainMarker;
 
-    var serverLocUrl = "http://139.59.43.69";
+    //Scaleable icon for markers
+    var icon;
+    var upIcon, downIcon, leftIcon, rightIcon;
+
+    var serverLocUrl = "http://localhost";
 
     //Array that stores all the markers
     var markerPositions = [];
@@ -81,12 +85,79 @@
             center: {lat: parseFloat(locationLat), lng: parseFloat(locationLng)},
             zoom: parseInt(zoomFactor)
         });
+
         mainMarker = new google.maps.Marker({
             label: 'M', position: {lat: parseFloat(locationLat), lng: parseFloat(locationLng)},
             map: map
         });
         infoWindow = new google.maps.InfoWindow;
         geovar = new google.maps.Geocoder;
+
+        upIcon = {
+            url: "arrowUp.jpg",
+            scaledSize: new google.maps.Size(50, 50),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(0, 0)
+        };
+
+        downIcon = {
+            url: "arrowDown.jpg",
+            scaledSize: new google.maps.Size(50, 50),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(0, 0)
+        };
+
+        leftIcon = {
+            url: "arrowLeft.jpg",
+            scaledSize: new google.maps.Size(50, 50),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(0, 0)
+        };
+
+        rightIcon = {
+            url: "arrowRight.jpg",
+            scaledSize: new google.maps.Size(50, 50),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(0, 0)
+        };
+
+        google.maps.event.addListener(map, "zoom_changed", function()
+        {
+            var mapZoom = map.getZoom();
+            //var originalScale = new google.maps.Size(50, 50);
+
+            //Only triggered if map's zoom is less than 14
+            if(mapZoom < 14) {
+                var difference = 14 - mapZoom; //14 is the normal total zoom
+
+                difference = 12 * difference;
+
+                icon.scaledSize = new google.maps.Size(50 - difference, 50 - difference);
+
+                //Make sure all markers have the scaled size icon
+                for (var i = 0; i < markerPositions.length; i++) {
+                    var iconToSet = markerPositions[i].marker.icon;
+                    iconToSet.scaledSize = icon.scaledSize;
+                    markerPositions[i].marker.setIcon(iconToSet);
+                }
+            }
+
+            else
+            {
+                var difference = mapZoom - 14;
+                difference = 12 * difference;
+
+                icon.scaledSize = new google.maps.Size(50 + difference, 50 + difference);
+
+                //Make sure all markers have the scaled size icon
+                for(var i = 0; i < markerPositions.length; i++) {
+                    var iconToSet = markerPositions[i].marker.icon;
+                    iconToSet.scaledSize = icon.scaledSize;
+                    markerPositions[i].marker.setIcon(iconToSet);
+                }
+            }
+        });
+
 
         google.maps.event.addListener(map, 'click', function (event) {
             addMarker(map, event.latLng)
@@ -120,7 +191,8 @@
                         var infowindow = new google.maps.InfoWindow;
                         var marker = new google.maps.Marker({
                             position: loc,
-                            icon: 'testSignal.jpeg',
+                            //label: '0',
+                            icon: icon,
                             map: map
                         });
                         //markerPositions[markerIterator] = {Sno: serial, Status: 0, loc: loc};
@@ -141,7 +213,7 @@
                                     var locArea = data.indexOf("location");
                                     var locationDsc = data.substring(dscArea + 6, locArea - 3);
                                     var serialArea = data.substring(data.indexOf("sno") + 6, data.indexOf("dsc") - 3);
-                                    window.alert("Dsc : " + locationDsc);
+                                    //window.alert("Dsc : " + locationDsc);
 
                                     document.getElementById("descBox").value = locationDsc;
                                     document.getElementById("serialBox").value = serialArea;
@@ -199,9 +271,27 @@
 
                 for (var i = 0; i < loc.length; i++) {
 
+                    //Which icon to display based on status...
+                    if(loc[i].status == '1')
+                        icon = upIcon;
+                    else if (loc[i].status == '2')
+                        icon = downIcon;
+                    else if (loc[i].status == '3')
+                        icon = leftIcon;
+                    else if (loc[i].sttus == '4')
+                        icon = rightIcon;
+                    else
+                        icon = {
+                            url: 'testSignal.jpeg',
+                            scaledSize: new google.maps.Size(50, 50),
+                            origin: new google.maps.Point(0, 0),
+                            anchor: new google.maps.Point(0, 0)
+                        };
+
                     var marker = new google.maps.Marker({
                         position: {lat: loc[i].location.lat, lng: loc[i].location.lng},
-                        label: ''+loc[i].status,
+                        //label: ''+loc[i].status,
+                        icon: icon,
                         map: map
                     });
 

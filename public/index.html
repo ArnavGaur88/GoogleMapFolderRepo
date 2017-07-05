@@ -35,7 +35,11 @@
     var map, infoWindow;
     var geovar;
 
-    var serverLocUrl = "http://139.59.43.69";
+    //The icons that should be displayed on markers, is substituted by following icons...
+    var icon;
+    var upIcon, downIcon, leftIcon, rightIcon;
+
+    var serverLocUrl = "http://localhost";
 
     //Gloabal array that stores every marker position
     var markerPositions = [];
@@ -75,6 +79,76 @@
         infoWindow = new google.maps.InfoWindow;
         geovar = new google.maps.Geocoder;
 
+        upIcon = {
+            url: "arrowUp.jpg",
+            scaledSize: new google.maps.Size(35, 35),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(0, 0)
+        };
+
+        downIcon = {
+            url: "arrowDown.jpg",
+            scaledSize: new google.maps.Size(35, 35),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(0, 0)
+        };
+
+        leftIcon = {
+            url: "arrowLeft.jpg",
+            scaledSize: new google.maps.Size(35, 35),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(0, 0)
+        };
+
+        rightIcon = {
+            url: "arrowRight.jpg",
+            scaledSize: new google.maps.Size(35, 35),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(0, 0)
+        };
+
+        google.maps.event.addListener(map, "zoom_changed", function()
+        {
+            var mapZoom = map.getZoom();
+            //var originalScale = new google.maps.Size(50, 50);
+
+            //Only triggered if map's zoom is less than 14
+            if(mapZoom < 14) {
+                var difference = 14 - mapZoom; //14 is the normal total zoom
+
+                //difference = 12 * difference;
+
+                //icon.scaledSize = new google.maps.Size(50 - difference, 50 - difference);
+
+                //icon.scale = icon.scale + (difference*0.6);
+
+                //Make sure all markers have the scaled size icon
+                for (var i = 0; i < markerPositions.length; i++) {
+                    var iconToSet = markerPositions[i].marker.icon;
+                    iconToSet.scale = 0.6 * difference;
+                    markerPositions[i].marker.setIcon(iconToSet);
+                }
+            }
+
+            else
+            {
+                var difference = mapZoom - 14;
+                //difference = 12 * difference;
+
+                //icon.scaledSize = new google.maps.Size(50 + difference, 50 + difference);
+                //icon.scale = 0.6 * difference;
+
+                //Make sure all markers have the scaled size icon
+                for(var i = 0; i < markerPositions.length; i++) {
+                    var iconToSet = markerPositions[i].marker.icon;
+                    //iconToSet.scaledSize = icon.scaledSize;
+                    iconToSet.scale = 0.6 * difference;
+                    markerPositions[i].marker.setIcon(iconToSet);
+                }
+            }
+        });
+
+
 
                 populateMap(); //making sure that previously added markers are present
 
@@ -93,9 +167,26 @@
 
                 for (var i = 0; i < loc.length; i++) {
 
+                    if(loc[i].status == '1')
+                        icon = upIcon;
+                    else if (loc[i].status == '2')
+                        icon = downIcon;
+                    else if (loc[i].status == '3')
+                        icon = leftIcon;
+                    else if (loc[i].sttus == '4')
+                        icon = rightIcon;
+                    else
+                        icon = {
+                        url: 'testSignal.jpeg',
+                            scaledSize: new google.maps.Size(50, 50),
+                            origin: new google.maps.Point(0, 0),
+                            anchor: new google.maps.Point(0, 0)
+                        };
+
                     var marker = new google.maps.Marker({
                         position: {lat: loc[i].location.lat, lng: loc[i].location.lng},
-                        label: ''+loc[i].status,
+                        //label: ''+loc[i].status,
+                        icon: icon,
                         map: map
                     });
 
@@ -144,7 +235,7 @@
 
                     google.maps.event.addListener(marker, 'mouseout', function() {
                         infoWindow.setMap(null);
-                    })
+                    });
                 }
             }
         }

@@ -58,8 +58,27 @@ function onMessageArrived(message) {
     //markerPositions is defined in index.html as well as addNew.html
     for(var i = 0; i < markerPositions.length; i++)
     {
+        var iconToSet;
+
+        if(stat == '1')
+            iconToSet = upIcon;
+        else if (stat == '2')
+            iconToSet = downIcon;
+        else if (stat == '3')
+            iconToSet = leftIcon;
+        else if (stat == '4')
+            iconToSet = rightIcon;
+        else
+            iconToSet = {
+            url: 'testSignal.jpeg',
+                scaledSize: new google.maps.Size(50, 50),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(0, 0)
+            };
+
         if(markerPositions[i].sno == serial) {
-            markerPositions[i].marker.setLabel('' + stat);
+            //markerPositions[i].marker.setLabel('' + stat);
+            markerPositions[i].marker.setIcon(iconToSet);
         }
     }
 
@@ -68,8 +87,7 @@ function onMessageArrived(message) {
 
 
     var request = new XMLHttpRequest();
-    request.open('POST', 'http://139.59.43.69/changeStatus', true);
+    request.open('POST', 'http://localhost/changeStatus', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.send(JSON.stringify(sendData));
-
 }

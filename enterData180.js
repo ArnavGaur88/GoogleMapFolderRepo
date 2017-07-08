@@ -4,31 +4,57 @@ var url = "mongodb://localhost:27017/TrafficLights";
 var app = express();
 var path = require('path');
 var bodyParser = require('body-parser');
+var mqtt = require('mqtt');
 
-//MQTT Connection
-//Needs PAHO, that will be included in the main file
-/*var client;
+
+var options = {
+    port: 16479,
+    host: 'tcp://m12.cloudmqtt.com',
+    clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
+    username: 'sxdzesyk',
+    password: 'dc_pY7Q7gOTw',
+    keepalive: 60,
+    reconnectPeriod: 1000,
+    protocolId: 'MQIsdp',
+    protocolVersion: 3,
+    clean: true,
+    encoding: 'utf8'
+};
+var client = mqtt.connect('tcp://m12.cloudmqtt.com', options);
+
+client.on('error', function(err){
+    console.log(err);
+});
 
 var connected = false;
 
-//MQTT Server Information
-var mqttHost = 'm12.cloudmqtt.com';
-var topic = 'TrafficLights';
-client = new Paho.MQTT.Client("m12.cloudmqtt.com", 36479, "web_" + parseInt(Math.random()));
-// set callback handlers
-client.onConnectionLost = onConnectionLost;
-client.onMessageArrived = onMessageArrived;
+client.on('connect', function(){
+    console.log("Connected, or not?");
+    client.subscribe('TrafficLights');
+    client.publish('TrafficLights', 'Here we are!');
+});
 
-//Options used to connect
-// connect the client
-var options = {
-    useSSL: true,
-    userName: "sxdzesyk",
-    password: "dc_pY7Q7gOTw",
-    onSuccess:onConnect
-}*/
+client.on('message', function(topic, message){
+    if(topic == 'TrafficLights') {
 
+        console.log(message.toString());
 
+        if(message.toString().indexOf("sno") == 0) {
+            var serial = message.toString().substring(5, message.toString().indexOf("status") - 1);
+            var stat = message.toString().substring(message.toString().indexOf("status") + 8);
+
+            console.log("Serial = " + serial);
+            console.log("Status = " + stat);
+
+            MongoClient.connect(url, function (err, db) {
+                db.collection('TrafficTable').update({"sno": serial}, {$set: {"status": stat}});
+            });
+        }
+        else
+        {
+            console.log("Waiting for state change...");
+        }
+    }});
 
 //Headers set here:
 // Add headers
@@ -148,60 +174,3 @@ app.post('/changeStatus', function(request, response){
     response.send("Made changes");
 })
 
-//--------------------------------MQTT Connection(FORMERLY changeStatus.js)---------------------------------
-
-// connect the client
-/*client.connect(options);
-
-// called when the client connects
-function onConnect() {
-    // Once a connection has been made, make a subscription and send a message.
-    connected = true;
-    console.log("onConnect");
-    var message = new Paho.MQTT.Message("Connected");
-    message.destinationName = 'TrafficLights';
-    client.subscribe(topic);
-    client.send(message);
-}
-
-// called when the client loses its connection
-function onConnectionLost(responseObject) {
-    if (responseObject.errorCode !== 0) {
-        console.log("onConnectionLost:" + responseObject.errorMessage);
-        /*connected = false;
-         console.log("Trying to reconnect");
-         client.connect(options);*/
-//    }
-//}
-
-//------------------------------------------------------------END OF MQTT Connection--------------------------------------------
-
-// called when a message arrives
-// whenever status is changed, it will trigger this event
-/*function onMessageArrived(message) {
-    console.log("onMessageArrived:" + message.payloadString);
-
-    var serial = message.payloadString.substring(5, message.payloadString.indexOf("status") - 1);
-    var stat = message.payloadString.substring(message.payloadString.indexOf("status") + 8);
-
-    console.log("Serial = " + serial);
-    console.log("Status = " + stat);
-
-    //markerPositions is defined in index.html as well as addNew.html
-    for(var i = 0; i < markerPositions.length; i++)
-    {
-        if(markerPositions[i].sno == serial) {
-            markerPositions[i].marker.setLabel('' + stat);
-        }
-    }
-
-    //change status of markerPositions[i] in back-end
-    var sendData = {serial: serial, stat: stat};
-
-
-    var request = new XMLHttpRequest();
-    request.open('POST', 'http://139.59.43.69/changeStatus', true);
-    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    request.send(JSON.stringify(sendData));
-}
-*/

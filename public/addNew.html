@@ -56,11 +56,15 @@
     var icon;
     var upIcon, downIcon, leftIcon, rightIcon;
 
+    var allMarkers = [];
+
     var serverLocUrl = "http://localhost";
 
     //Array that stores all the markers
     var markerPositions = [];
     var markerIterator = 0;
+
+    setInterval(populateMap, 2000);
 
     function initMap() {
 
@@ -163,7 +167,7 @@
             addMarker(map, event.latLng)
         });
 
-        populateMap(); //making sure that previously added markers are present
+        //populateMap(); //making sure that previously added markers are present
     }
 
 
@@ -260,6 +264,19 @@
             window.alert("Please check you have entered serial number and description!");
     }
     function populateMap() {
+
+        console.log("Called populateMap");
+
+        if(allMarkers.length > 0)
+        {
+            for(var all = 0; all < allMarkers.length; all++)
+            {
+                allMarkers[all].setMap(null);
+                allMarkers = [];
+            }
+        }
+
+        populateAgain = false;
         var loc;
 
         var reqst = new XMLHttpRequest();
@@ -295,10 +312,11 @@
                         map: map
                     });
 
+                    allMarkers[i] = marker;
+
                     //markerPositions[markerIterator] = {Sno: loc[i].sno, Status: loc[i].status};
                     //console.log("Outside markerPositions: " + loc[i].sno);
                     markerPositions[markerIterator] = {marker: marker, sno: loc[i].sno};
-                    console.log("markerPositions says: " + markerPositions[markerIterator].sno);
                     markerIterator += 1;
 
                     google.maps.event.addListener(marker, 'click', function () {
@@ -411,6 +429,8 @@
                         document.getElementById("serialBox").value = "";
                     })
                 }
+
+                populateAgain = true;
             }
         }
         reqst.send();
@@ -426,7 +446,8 @@
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBppNHjpLzKpcGcfBMjx6Nd42UBoLy5S58&callback=initMap">
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
-<script src="changeStatus.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>-->
+<!--<script src="paho.js"></script>-->
+<!--<script src="changingStatus.js"></script>-->
 </body>
 </html>

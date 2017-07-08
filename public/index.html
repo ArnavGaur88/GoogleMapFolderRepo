@@ -39,11 +39,20 @@
     var icon;
     var upIcon, downIcon, leftIcon, rightIcon;
 
+    //Can we use populateMap again?
+    var populateAgain = true;
+
+    var allMarkers = [];
+
     var serverLocUrl = "http://localhost";
 
     //Gloabal array that stores every marker position
     var markerPositions = [];
     var markerIterator = 0;
+
+
+    //Update the map every 2 seconds.
+        setInterval(populateMap, 3000);
 
 
     function initMap() {
@@ -148,15 +157,24 @@
             }
         });
 
-
-
-                populateMap(); //making sure that previously added markers are present
+        //populateMap();
 
     }
 
 
     function populateMap() {
+
+        //console.log("Calling populateMap");
+
         var loc;
+
+        if(allMarkers.length > 0)
+        {
+            for(var all = 0; all < allMarkers.length; all++)
+                allMarkers[all].setMap(null);
+
+            allMarkers = [];
+        }
 
         var reqst = new XMLHttpRequest();
         reqst.open("POST", serverLocUrl+"/populateMap", true);
@@ -167,17 +185,19 @@
 
                 for (var i = 0; i < loc.length; i++) {
 
-                    if(loc[i].status == '1')
+                    console.log("sno: " + loc[i].sno + " status: " + loc[i].status);
+
+                    if (loc[i].status == '1')
                         icon = upIcon;
                     else if (loc[i].status == '2')
                         icon = downIcon;
                     else if (loc[i].status == '3')
                         icon = leftIcon;
-                    else if (loc[i].sttus == '4')
+                    else if (loc[i].status == '4')
                         icon = rightIcon;
                     else
                         icon = {
-                        url: 'testSignal.jpeg',
+                            url: 'testSignal.jpeg',
                             scaledSize: new google.maps.Size(50, 50),
                             origin: new google.maps.Point(0, 0),
                             anchor: new google.maps.Point(0, 0)
@@ -190,9 +210,12 @@
                         map: map
                     });
 
-                    //Add in array
-                    markerPositions[markerIterator] = {marker: marker, sno: loc[i].sno};
-                    markerIterator += 1;
+                    allMarkers[i] = marker;
+
+                    for(var input = 0; input < loc.length; input++) {
+                        markerIterator = loc.length;
+                        markerPositions[input] = {marker: marker, sno: loc[i].sno, stat: loc[i].status};
+                    }
 
                     google.maps.event.addListener(marker, 'mouseover', function () {
                         {
@@ -251,7 +274,8 @@
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBppNHjpLzKpcGcfBMjx6Nd42UBoLy5S58&callback=initMap">
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
-<script src="changeStatus.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>-->
+<!--<script src="paho.js"></script>-->
+<!--<script src="changingStatus.js"></script>-->
 </body>
 </html>

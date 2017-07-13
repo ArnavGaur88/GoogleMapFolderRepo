@@ -39,21 +39,61 @@
     var icon;
     var upIcon, downIcon, leftIcon, rightIcon;
 
-    //Can we use populateMap again?
-    var populateAgain = true;
-
-    var allMarkers = [];
-
     var serverLocUrl = "http://localhost";
 
     //Gloabal array that stores every marker position
     var markerPositions = [];
     var markerIterator = 0;
 
+    setInterval(Update, 3000);
 
-    //Update the map every 2 seconds.
-        setInterval(populateMap, 3000);
+    function Update() {
 
+        console.log("Inside Update");
+
+        if (markerPositions.length > 0) {
+            var reqst = new XMLHttpRequest();
+            reqst.open("POST", serverLocUrl + "/populateMap", true);
+
+            reqst.onreadystatechange = function () {
+                if (reqst.readyState == 4 && reqst.status == 200) {
+                    var loc = JSON.parse(reqst.responseText);
+
+                    console.log("How many markers: " + markerPositions.length);
+
+                    //console.log("Swap = " + swap);
+
+                    for (var i = 0; i < loc.length; i++) {
+
+                        //console.log("sno: " + loc[i].sno + " status: " + loc[i].status);
+
+                        if (loc[i].status == '1')
+                            icon = upIcon;
+                        else if (loc[i].status == '2')
+                            icon = downIcon;
+                        else if (loc[i].status == '3')
+                            icon = leftIcon;
+                        else if (loc[i].status == '4')
+                            icon = rightIcon;
+                        else
+                            icon = {
+                                url: 'testSignal.jpeg',
+                                scaledSize: new google.maps.Size(50, 50),
+                                origin: new google.maps.Point(0, 0),
+                                anchor: new google.maps.Point(0, 0)
+                            };
+
+                        markerPositions[i].marker.setIcon(icon);
+
+                    console.log("Marker: " + markerPositions[i].sno + " status: " + loc[i].status);
+
+                    markerPositions[i].status = loc[i].status;
+                    }
+                }
+                }
+                reqst.send();
+            }
+    }
 
     function initMap() {
 
@@ -157,7 +197,7 @@
             }
         });
 
-        //populateMap();
+        populateMap();
 
     }
 
@@ -168,20 +208,14 @@
 
         var loc;
 
-        if(allMarkers.length > 0)
-        {
-            for(var all = 0; all < allMarkers.length; all++)
-                allMarkers[all].setMap(null);
-
-            allMarkers = [];
-        }
-
         var reqst = new XMLHttpRequest();
-        reqst.open("POST", serverLocUrl+"/populateMap", true);
+        reqst.open("POST", serverLocUrl+ "/populateMap", true);
 
         reqst.onreadystatechange = function () {
             if (reqst.readyState == 4 && reqst.status == 200) {
                 loc = JSON.parse(reqst.responseText);
+
+                //console.log("Swap = " + swap);
 
                 for (var i = 0; i < loc.length; i++) {
 
@@ -210,17 +244,15 @@
                         map: map
                     });
 
-                    allMarkers[i] = marker;
-
-                    for(var input = 0; input < loc.length; input++) {
-                        markerIterator = loc.length;
-                        markerPositions[input] = {marker: marker, sno: loc[i].sno, stat: loc[i].status};
-                    }
+                    //Adding markers to markerPositions array
+                    markerPositions[i] =
+                        {marker: marker, sno: loc[i].sno, status: loc[i].status};
+                    markerIterator += 1;
 
                     google.maps.event.addListener(marker, 'mouseover', function () {
                         {
                             var sendReq = new XMLHttpRequest();
-                            sendReq.open('POST', serverLocUrl+'/checkMap', true);
+                            sendReq.open('POST', serverLocUrl+ '/checkMap', true);
                             sendReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                             sendReq.onreadystatechange = function () {
                                 if (sendReq.readyState == 4 && sendReq.status == 200) {
@@ -233,10 +265,9 @@
                                     var locationDsc = data.substring(dscArea + 6, locArea - 3);
                                     var serialDest = data.substring(data.indexOf("sno") + 6, dscArea - 3);
 
-                                    /*window.alert("Dsc : " + locationDsc);
-                                    window.alert("SNO: " + serialDest);*/
+                                    var
 
-                                    var infoPosition = data.substring(locArea + 11, data.indexOf("status") - 3);
+                                        infoPosition = data.substring(locArea + 11, data.indexOf("status") - 3);
 
                                     var infoPositionLat = parseFloat(infoPosition.substring(infoPosition.indexOf("lat") + 5,
                                         infoPosition.indexOf("lng") - 2));
@@ -250,20 +281,24 @@
                                     infoWindow.open(map);
                                 }
                             }
-                            var sendData = {lat: this.position.lat(), lng: this.position.lng()};
+                            var sendData = {lat: this.position.lat(), lng: this.position.lng()
+                            };
                             console.log(sendData);
-                            sendReq.send(JSON.stringify(sendData));
+                            sendReq.send(JSON.stringify(
+                                sendData));
                         }
                     });
 
-                    google.maps.event.addListener(marker, 'mouseout', function() {
+                    google.maps.event.addListener(
+                        marker, 'mouseout', function() {
                         infoWindow.setMap(null);
                     });
                 }
             }
-        }
-        reqst.send();
     }
+        reqst.send();
+
+        }
 
 
 

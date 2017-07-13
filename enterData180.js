@@ -172,5 +172,7 @@ app.post('/changeStatus', function(request, response){
     });
 
     response.send("Made changes");
-})
+});
+
+
 

@@ -51,6 +51,9 @@
 
         console.log("Inside Update");
 
+        //Make sure the value of markerpositions is up-to-date
+        populateMap();
+
         if (markerPositions.length > 0) {
             var reqst = new XMLHttpRequest();
             reqst.open("POST", serverLocUrl + "/populateMap", true);

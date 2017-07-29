@@ -99,7 +99,7 @@
                                 url: 'testSignal.jpeg',
                                 scaledSize: new google.maps.Size(50, 50),
                                 origin: new google.maps.Point(0, 0),
-                                anchor: new google.maps.Point(0, 0)
+                                anchor: new google.maps.Point(32, 32)
                             };
 
                         console.log("Marker: " + markerPositions[i].sno + " ,Status: " + markerPositions[i].status);
@@ -175,7 +175,7 @@
             anchor: new google.maps.Point(0, 0)
         };
 
-        google.maps.event.addListener(map, "zoom_changed", function()
+        /*oogle.maps.event.addListener(map, "zoom_changed", function()
         {
             var mapZoom = map.getZoom();
             //var originalScale = new google.maps.Size(50, 50);
@@ -210,7 +210,7 @@
                     markerPositions[i].marker.setIcon(iconToSet);
                 }
             }
-        });
+        });*/
 
 
         google.maps.event.addListener(map, 'click', function (event) {
@@ -341,7 +341,7 @@
                             url: 'testSignal.jpeg',
                             scaledSize: new google.maps.Size(50, 50),
                             origin: new google.maps.Point(0, 0),
-                            anchor: new google.maps.Point(0, 0)
+                            anchor: new google.maps.Point(32, 32)
                         };
 
                     var marker = new google.maps.Marker({
